@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fidha & Rashid – Wedding Invitation</title>
+  {% load static %}
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #e8e0d0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cinzel', serif;
+      overflow: hidden;
+    }
+
+    .scene {
+      position: relative;
+      width: min(95vw, 680px);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .envelope-wrap {
+      position: relative;
+      width: 100%;
+      padding-top: 75%;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.30);
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+    .envelope-wrap:hover {
+      transform: scale(1.012);
+      box-shadow: 0 40px 100px rgba(0,0,0,0.38);
+    }
+
+    .envelope-inner { position: absolute; inset: 0; }
+
+    .envelope-bg {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center;
+      z-index: 1;
+    }
+
+    .flap-top {
+      position: absolute; inset: 0;
+      clip-path: polygon(0% 0%, 100% 0%, 50% 52%);
+      background: rgba(237,232,219,0.0);
+      transform-origin: top center;
+      transition: transform 1.0s cubic-bezier(0.4,0,0.2,1);
+      z-index: 10;
+    }
+    .envelope-wrap.open .flap-top {
+      transform: perspective(900px) rotateX(180deg);
+    }
+
+    .card-peek {
+      position: absolute;
+      bottom: 0; left: 50%;
+      transform: translateX(-50%) translateY(100%);
+      width: 52%; height: 78%;
+      background: linear-gradient(160deg, #5a0a14 0%, #2d0508 100%);
+      border-radius: 6px 6px 0 0;
+      z-index: 5;
+      box-shadow: 0 -4px 30px rgba(0,0,0,0.4);
+      transition: transform 1.3s cubic-bezier(0.4,0,0.2,1) 0.4s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .card-peek::before {
+      content: '✦  FIDHA & RASHID  ✦';
+      font-family: 'Cinzel', serif;
+      font-size: clamp(0.55rem,1.5vw,0.75rem);
+      color: rgba(201,162,39,0.7);
+      letter-spacing: 0.15em;
+      position: absolute; top: 1.5rem;
+    }
+    .envelope-wrap.open .card-peek {
+      transform: translateX(-50%) translateY(22%);
+    }
+
+    .names {
+      position: absolute; bottom: 8%; right: 5%;
+      text-align: center; color: #7a4f2d;
+      font-family: 'Cinzel', serif; z-index: 30;
+      line-height: 1.6; letter-spacing: 0.1em;
+    }
+    .names .name { font-size: clamp(0.9rem,2.2vw,1.3rem); font-weight: 600; }
+    .names .amp  { font-size: clamp(0.8rem,1.8vw,1rem); font-weight: 400; }
+
+    .name-overlay {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 1rem; opacity: 0; pointer-events: none;
+      transition: opacity 0.6s ease 1.4s;
+      z-index: 50;
+      background: rgba(26,3,5,0.72);
+      backdrop-filter: blur(3px);
+    }
+    .envelope-wrap.open .name-overlay {
+      opacity: 1; pointer-events: auto;
+    }
+
+    .name-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(0.8rem,2.2vw,1.1rem);
+      color: #e8c94a; letter-spacing: 0.14em;
+      text-align: center; line-height: 1.6;
+    }
+    .name-subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(0.75rem,1.8vw,0.95rem);
+      color: rgba(200,164,90,0.8);
+      text-align: center; letter-spacing: 0.06em;
+    }
+    .name-input-wrap {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 0.7rem;
+      width: 80%; max-width: 320px;
+    }
+    .name-input {
+      width: 100%;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(201,162,39,0.5);
+      border-bottom: 2px solid #c9a227;
+      color: #f5f0e8;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(0.9rem,2.2vw,1.1rem);
+      font-style: italic; text-align: center;
+      padding: 0.7em 1em; border-radius: 2px;
+      outline: none; letter-spacing: 0.06em;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .name-input::placeholder { color: rgba(200,164,90,0.5); }
+    .name-input:focus { background: rgba(255,255,255,0.1); border-color: #e8c94a; }
+    .error-msg {
+      color: #ff8a8a; font-size: 0.75rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic; letter-spacing: 0.05em;
+    }
+    .open-btn {
+      background: linear-gradient(135deg, #c9a227, #e8c94a, #c9a227);
+      border: none; color: #2d0508;
+      font-family: 'Cinzel', serif;
+      font-size: clamp(0.72rem,1.8vw,0.9rem);
+      font-weight: 600; letter-spacing: 0.14em;
+      padding: 0.8em 2.2em; border-radius: 2px;
+      cursor: pointer; width: 100%; text-align: center;
+      box-shadow: 0 4px 24px rgba(201,162,39,0.55);
+      animation: shimmer 2s ease-in-out infinite;
+    }
+    @keyframes shimmer {
+      0%,100%{box-shadow:0 4px 24px rgba(201,162,39,0.5);}
+      50%{box-shadow:0 4px 40px rgba(232,201,74,0.85);}
+    }
+
+    .hint {
+      text-align: center; margin-top: 1.4rem;
+      color: #9a7e5f;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(0.85rem,2vw,1.1rem);
+      letter-spacing: 0.07em;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
+
+    .scene.opened .hint {
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
+    }
+
+    /* Music button */
+    #music-btn {
+      position: fixed; bottom: 1.2rem; right: 1.2rem;
+      z-index: 999; width: 44px; height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #795D3B, #a07d50);
+      border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+      box-shadow: 0 4px 18px rgba(121,93,59,0.5);
+    }
+    #music-btn.playing { animation: musicGlow 1.5s ease-in-out infinite; }
+    @keyframes musicGlow {
+      0%,100%{box-shadow:0 0 12px rgba(121,93,59,0.5);transform:scale(1);}
+      50%{box-shadow:0 0 28px rgba(121,93,59,0.9);transform:scale(1.1);}
+    }
+  </style>
+</head>
+<body>
+
+<!-- Single audio element -->
+<audio id="bg-audio" loop preload="auto">
+  <source src="{% static 'audio/bg_music.mp3' %}" type="audio/mpeg">
+</audio>
+
+<!-- Single music button -->
+<button id="music-btn" onclick="toggleMusic(event)">🎵</button>
+
+<div class="scene" id="scene">
+  <div class="envelope-wrap" id="envelope" onclick="openEnvelope()">
+    <div class="envelope-inner">
+
+      <img class="envelope-bg"
+           src="{% static 'images/envolep.jpg' %}"
+           alt="Envelope" draggable="false"/>
+
+      <div class="flap-top"></div>
+      <div class="card-peek"></div>
+
+      <div class="names">
+        <div class="name">FIDHA</div>
+        <div class="amp">&amp;</div>
+        <div class="name">RASHID</div>
+      </div>
+
+      <div class="name-overlay" id="nameOverlay">
+        <div class="name-title">You are cordially invited ✦</div>
+        <div class="name-subtitle">Please enter your name to open the invitation</div>
+        <form method="POST" action="{% url 'envelope' %}"
+              class="name-input-wrap"
+              onsubmit="return validateName()">
+          {% csrf_token %}
+          <input class="name-input" type="text" name="guest_name"
+                 id="guestNameInput" placeholder="Enter your name..."
+                 autocomplete="off" maxlength="100"/>
+          {% if error %}
+            <div class="error-msg">{{ error }}</div>
+          {% endif %}
+          <button type="submit" class="open-btn">Open Invitation ✦</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+  <p class="hint">✦ Click the envelope to open ✦</p>
+</div>
+
+<script>
+  const audio = document.getElementById('bg-audio');
+  const btn   = document.getElementById('music-btn');
+  let playing = false;
+
+  /* Restore music if user navigated back */
+  window.addEventListener('load', () => {
+    const t = sessionStorage.getItem('musicTime');
+    const p = sessionStorage.getItem('musicPlaying');
+    if (t) audio.currentTime = parseFloat(t);
+    if (p === 'true') {
+      audio.volume = 0.4;
+      audio.play().then(() => {
+        playing = true; btn.textContent = '🎶'; btn.classList.add('playing');
+      }).catch(() => {});
+    }
+  });
+
+  /* Save state on page leave */
+  window.addEventListener('beforeunload', () => {
+    sessionStorage.setItem('musicTime', audio.currentTime);
+    sessionStorage.setItem('musicPlaying', playing ? 'true' : 'false');
+  });
+
+  /* Open envelope AND start music — user click = autoplay allowed */
+  function openEnvelope() {
+    const env   = document.getElementById('envelope');
+    const scene = document.getElementById('scene');
+    if (env.classList.contains('open')) return;
+    env.classList.add('open');
+    scene.classList.add('opened');
+
+    if (!playing) {
+      audio.volume = 0;
+      audio.play().then(() => {
+        playing = true; btn.textContent = '🎶'; btn.classList.add('playing');
+        let v = 0;
+        const iv = setInterval(() => {
+          if (v < 0.4) { v += 0.02; audio.volume = v; }
+          else { audio.volume = 0.4; clearInterval(iv); }
+        }, 60);
+      }).catch(() => {});
+    }
+  }
+
+  function toggleMusic(e) {
+    if (e) e.stopPropagation();
+    if (playing) {
+      audio.pause(); playing = false;
+      btn.textContent = '🎵'; btn.classList.remove('playing');
+    } else {
+      audio.volume = 0.4; audio.play();
+      playing = true; btn.textContent = '🎶'; btn.classList.add('playing');
+    }
+  }
+
+  function validateName() {
+    const input = document.getElementById('guestNameInput');
+    if (!input.value.trim()) {
+      input.focus();
+      input.style.borderColor = '#ff6b6b';
+      setTimeout(() => input.style.borderColor = '', 1500);
+      return false;
+    }
+    return true;
+  }
+
+  document.getElementById('nameOverlay').addEventListener('click', e => e.stopPropagation());
+
+  {% if error %}
+    window.addEventListener('load', () => {
+      document.getElementById('envelope').classList.add('open');
+      document.getElementById('scene').classList.add('opened');
+    });
+  {% endif %}
+</script>
+</body>
+</html>

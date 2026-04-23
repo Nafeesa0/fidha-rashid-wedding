@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>We'll miss you – Fidha & Rashid</title>
+  {% load static %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Gulzar&family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; }
+    body { background: #1a0305; display: flex; align-items: center; justify-content: center; }
+
+    .bg-img { position: fixed; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center top; z-index: 0; }
+    .bg-overlay { position: fixed; inset: 0; background: rgba(10,1,3,0.72); z-index: 1; }
+
+    .back-btn { position: fixed; top:1rem; left:1rem; z-index:1000; background:rgba(121,93,59,0.15); border:1px solid #795D3B; color:#795D3B; font-family:'Cinzel',serif; font-size:0.72rem; letter-spacing:0.1em; padding:0.45em 1.1em; border-radius:2px; cursor:pointer; text-decoration:none; backdrop-filter:blur(4px); transition:background 0.3s,color 0.3s; }
+    .back-btn:hover{background:#795D3B;color:#f5f0e8;}
+
+    .petal { position:fixed; top:-30px; pointer-events:none; opacity:0; animation:fall linear infinite; z-index:5; }
+    @keyframes fall{0%{transform:translateY(0) rotate(0deg);opacity:0.7;}100%{transform:translateY(110vh) rotate(360deg);opacity:0;}}
+
+    .page { position:relative; z-index:20; width:100vw; height:100vh; display:flex; align-items:center; justify-content:center; padding:0.8rem; }
+
+    .card { height:min(98vh,900px); width:min(73.5vh,98vw); border-radius:6px; overflow:hidden; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.95); animation:cardFade 0.8s ease both; }
+    @keyframes cardFade{0%{opacity:0;transform:translateY(20px) scale(0.95);}100%{opacity:1;transform:translateY(0) scale(1);}}
+
+    .card-bg { position:absolute; inset:0; width:100%; height:100%; object-fit:fill; z-index:0; }
+    .card-overlay { position:absolute; inset:0; background:rgba(15,2,4,0.72); z-index:1; }
+
+    .card-content { position:absolute; top:14%; left:13%; right:13%; bottom:11%; z-index:2; display:flex; flex-direction:column; align-items:center; justify-content:space-evenly; text-align:center; }
+
+    .farewell-icon { font-size:clamp(2rem,6vh,3rem); animation:sway 3s ease-in-out infinite; }
+    @keyframes sway{0%,100%{transform:rotate(-5deg);}50%{transform:rotate(5deg);}}
+
+    .no-title { font-family:'Cinzel',serif; font-size:clamp(0.85rem,2.8vh,1.4rem); color:#795D3B; letter-spacing:0.1em; line-height:1.4; }
+    .gold-divider { width:60%; height:1px; background:linear-gradient(to right,transparent,#795D3B,transparent); }
+    .farewell-text { font-family:'Cormorant Garamond',serif; text-align:center; color:#795D3B; font-size:clamp(0.8rem,2.5vh,1.1rem); line-height:1.9; font-style:italic; max-width:88%; opacity:0.9; }
+    .dua-arabic { font-family:'Gulzar',serif; font-size:clamp(1.1rem,3.5vh,1.8rem); color:#795D3B; }
+
+    .close-btn { background:linear-gradient(135deg,#795D3B,#a07d50,#795D3B); border:none; color:#f5f0e8; font-family:'Cinzel',serif; font-size:clamp(0.65rem,2vh,0.82rem); font-weight:600; letter-spacing:0.15em; padding:0.75em 2.2em; border-radius:2px; cursor:pointer; box-shadow:0 4px 20px rgba(121,93,59,0.35); transition:box-shadow 0.3s,transform 0.3s; }
+    .close-btn:hover{box-shadow:0 6px 30px rgba(121,93,59,0.55);transform:translateY(-2px);}
+
+    #countdown { font-family:'Cinzel',serif; font-size:clamp(0.6rem,1.8vh,0.75rem); color:rgba(121,93,59,0.55); letter-spacing:0.1em; }
+
+    #music-btn { position:fixed; bottom:1.2rem; right:1.2rem; z-index:999; width:44px; height:44px; border-radius:50%; background:linear-gradient(135deg,#795D3B,#a07d50); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:1.2rem; box-shadow:0 4px 18px rgba(121,93,59,0.5); }
+    #music-btn.playing{animation:musicGlow 1.5s ease-in-out infinite;}
+    @keyframes musicGlow{0%,100%{box-shadow:0 0 12px rgba(121,93,59,0.5);transform:scale(1);}50%{box-shadow:0 0 28px rgba(121,93,59,0.9);transform:scale(1.1);}}
+  </style>
+</head>
+<body>
+
+  <img class="bg-img" src="{% static 'images/main.jpg' %}" alt="Background"/>
+  <div class="bg-overlay"></div>
+  <a class="back-btn" href="{% url 'main_invite' %}#page-rsvp">← Back</a>
+
+  <!-- Single audio -->
+  <audio id="bg-audio" loop preload="auto">
+    <source src="{% static 'audio/bg_music.mp3' %}" type="audio/mpeg">
+  </audio>
+  <!-- Single music button -->
+  <button id="music-btn" onclick="toggleMusic()">🎵</button>
+
+  <script>
+    ['🌹','❀','✿','🌷'].forEach(s => {
+      for(let i=0;i<5;i++){
+        const d=document.createElement('div');
+        d.className='petal'; d.textContent=s;
+        d.style.left=Math.random()*100+'vw';
+        d.style.fontSize=(Math.random()*14+10)+'px';
+        d.style.animationDuration=(Math.random()*6+5)+'s';
+        d.style.animationDelay=(Math.random()*8)+'s';
+        document.body.appendChild(d);
+      }
+    });
+  </script>
+
+  <div class="page">
+    <div class="card">
+      <img class="card-bg" src="{% static 'images/main.jpg' %}" alt="Background Card"/>
+      <div class="card-overlay"></div>
+      <div class="card-content">
+        <div class="farewell-icon">🕊️</div>
+        <div class="no-title">We understand,<br>and we appreciate you.</div>
+        <div class="gold-divider"></div>
+        <p class="farewell-text">Though you won't be joining us,<br>your prayers and duas are always<br>with us on this blessed day.</p>
+        <div class="dua-arabic">بَارَكَ اللَّهُ فِيكُمْ</div>
+        <p class="farewell-text" style="font-size:clamp(0.72rem,2.2vh,0.95rem);">May Allah bless you abundantly.<br>We miss your presence, but we understand.</p>
+        <div class="gold-divider"></div>
+        <button class="close-btn" onclick="closeInvitation()">Close Invitation</button>
+        <div id="countdown"></div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  /* Music continues from previous page */
+  const audio = document.getElementById('bg-audio');
+  const btn   = document.getElementById('music-btn');
+  let playing = false;
+
+  window.addEventListener('load', () => {
+    const t = sessionStorage.getItem('musicTime');
+    const p = sessionStorage.getItem('musicPlaying');
+    if (t) audio.currentTime = parseFloat(t);
+    /* User clicked NO — autoplay allowed */
+    if (p === 'true') {
+      audio.volume = 0.4;
+      audio.play().then(() => {
+        playing = true; btn.textContent = '🎶'; btn.classList.add('playing');
+      }).catch(() => {});
+    }
+  });
+
+  window.addEventListener('beforeunload', () => {
+    sessionStorage.setItem('musicTime', audio.currentTime);
+    sessionStorage.setItem('musicPlaying', playing ? 'true' : 'false');
+  });
+
+  function toggleMusic() {
+    if (playing) { audio.pause(); playing=false; btn.textContent='🎵'; btn.classList.remove('playing'); }
+    else { audio.volume=0.4; audio.play(); playing=true; btn.textContent='🎶'; btn.classList.add('playing'); }
+  }
+
+  /* Countdown */
+  let seconds = 10;
+  const countEl = document.getElementById('countdown');
+  function updateCountdown(){
+    countEl.textContent=`Auto-closing in ${seconds}s`;
+    if(seconds<=0){closeInvitation();}
+    else{seconds--;setTimeout(updateCountdown,1000);}
+  }
+  function closeInvitation(){
+    window.close();
+    setTimeout(()=>{
+      document.body.innerHTML=`<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a0305;font-family:'Cinzel',serif;color:#795D3B;text-align:center;padding:2rem;"><div><div style="font-size:2rem;margin-bottom:1rem;">✦</div><div style="font-size:1rem;letter-spacing:0.15em;margin-bottom:0.8rem;">JazakAllahu Khairan</div><div style="font-size:0.8rem;color:rgba(121,93,59,0.8);font-family:'Cormorant Garamond',serif;font-style:italic;">May Allah bless you abundantly.<br>You may now close this tab.</div></div></div>`;
+    },500);
+  }
+  setTimeout(updateCountdown,1500);
+</script>
+</body>
+</html>

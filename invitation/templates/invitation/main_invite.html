@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fidha & Rashid – Wedding Invitation</title>
+  {% load static %}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Allura&family=Gulzar&family=Scheherazade+New:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+    body { margin: 0; background: #1a0305; overflow-x: hidden; }
+
+    .back-btn {
+      position: fixed; top: 1rem; left: 1rem; z-index: 1000;
+      background: rgba(121,93,59,0.15); border: 1px solid #795D3B;
+      color: #795D3B; font-family: 'Cinzel', serif; font-size: 0.72rem;
+      letter-spacing: 0.1em; padding: 0.45em 1.1em; border-radius: 2px;
+      cursor: pointer; text-decoration: none; backdrop-filter: blur(4px);
+      transition: background 0.3s, color 0.3s;
+    }
+    .back-btn:hover { background: #795D3B; color: #f5f0e8; }
+
+    section {
+      width: 100%; height: 100svh; scroll-snap-align: start;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden; background: #1a0305;
+    }
+
+    .card-wrap {
+      position: relative; height: 100svh;
+      width: min(75svh, 100vw); flex-shrink: 0;
+    }
+    .card-bg {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%; object-fit: fill; z-index: 0;
+    }
+
+    /* PAGE 1 */
+    #page-invite .card-content {
+      position: absolute;
+      top: 14%; left: 13%; right: 13%; bottom: 11%;
+      z-index: 2; display: flex; flex-direction: column;
+      align-items: center; justify-content: space-evenly; overflow: hidden;
+    }
+
+    .bismillah-arabic {
+      font-family: 'Scheherazade New', serif; font-weight: 700;
+      font-size: clamp(1rem, 3.2svh, 2rem); color: #795D3B;
+      text-align: center; line-height: 1.2; width: 75%; letter-spacing: 0.05em;
+    }
+
+    .t-reg {
+      font-family: 'Times New Roman', Times, serif; font-weight: 400;
+      display: block; text-align: center;
+      transform: scaleX(0.82); transform-origin: center;
+      width: 100%; color: #795D3B;
+    }
+    .t-bold {
+      font-family: 'Times New Roman', Times, serif; font-weight: 700;
+      display: block; text-align: center;
+      transform: scaleX(0.82); transform-origin: center;
+      width: 100%; color: #795D3B;
+    }
+
+    .bismillah-en  { font-size: clamp(0.52rem, 1.5svh, 0.75rem); line-height: 1.5; }
+    .invite-intro  { font-size: clamp(0.48rem, 1.5svh, 0.68rem); line-height: 1.65; }
+    .blessing-text { font-size: clamp(0.42rem, 1.5svh, 0.58rem); line-height: 1.7; }
+
+    .divider-gold {
+      width: 60%; height: 1px;
+      background: linear-gradient(to right, transparent, #795D3B, transparent);
+      flex-shrink: 0;
+    }
+
+    .bride-name, .groom-name {
+      font-family: 'Pinyon Script', cursive; font-style: normal; font-weight: 400;
+      text-align: center; color: #795D3B;
+      font-size: clamp(1.5rem, 5.5svh, 3rem);
+      line-height: 1.05; width: 100%; letter-spacing: 0.02em;
+    }
+
+    .and-text {
+      font-family: 'Allura', cursive;
+      font-size: clamp(1.5rem, 4.36svh, 3rem);
+      color: #795D3B; text-align: center; line-height: 1.1;
+    }
+
+    .barakallah {
+      font-family: 'Gulzar', serif;
+      font-size: clamp(0.9rem, 2svh, 1.3rem);
+      color: #795D3B; text-align: center; line-height: 1.5;
+    }
+
+    .scroll-hint {
+      font-family: 'Cinzel', serif; font-size: clamp(0.36rem, 0.8svh, 0.5rem);
+      letter-spacing: 0.18em; color: rgba(121,93,59,0.35);
+      text-align: center; animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:0.2} 50%{opacity:0.7} }
+
+    /* PAGE 2 */
+    #page-details .card-content {
+      position: absolute;
+      top: 25%; left: 8%; right: 8%; bottom: 28%;
+      z-index: 2; display: flex; flex-direction: column;
+      align-items: center; justify-content: space-evenly; text-align: center;
+    }
+
+    .cordially-title { font-size: clamp(0.75rem, 8svh, 1.1rem); line-height: 1.5; }
+    .date-main {
+      font-family: 'Playfair Display', serif; font-weight: 700; color: #795D3B;
+      font-size: clamp(0.65rem, 4svh, 0.9rem); text-align: center;
+    }
+    .date-hijri {
+      font-family: 'Playfair Display', serif; font-style: italic;
+      font-weight: 400; color: #795D3B;
+      font-size: clamp(0.46rem, 2svh, 0.65rem); text-align: center;
+    }
+    .time-block  { font-size: clamp(0.65rem, 3svh, 0.9rem); }
+    .venue-name  { font-size: clamp(0.58rem, 2svh, 0.82rem); line-height: 1.55; }
+    .inshallah-text { font-size: clamp(0.7rem, 3svh, 1rem); letter-spacing: 0.18em; }
+    .presence-text  { font-size: clamp(0.44rem, 2svh, 0.62rem); line-height: 1.6; opacity: 0.88; }
+
+    .location-icon-wrap {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 0.2svh; cursor: pointer; text-decoration: none;
+      transition: transform 0.3s ease;
+    }
+    .location-icon-wrap:hover { transform: scale(1.1); }
+    .location-icon-wrap svg { width: 28px; height: 28px; }
+    .location-label { font-size: clamp(0.38rem, 0.82svh, 0.52rem); color: #795D3B; letter-spacing: 0.1em; }
+
+    /* PAGE 3 */
+    #page-rsvp .card-content {
+      position: absolute;
+      top: 14%; left: 13%; right: 13%; bottom: 11%;
+      z-index: 2; display: flex; flex-direction: column;
+      align-items: center; justify-content: space-evenly;
+    }
+
+    .blessing-heading {
+      font-family: 'Cormorant Garamond', serif; font-weight: 600;
+      font-size: clamp(1rem, 3svh, 2rem); color: #795D3B;
+      text-align: center; line-height: 1.3;
+    }
+    .blessing-date {
+      font-family: 'Cinzel', serif; font-size: clamp(0.75rem, 2svh, 1.3rem);
+      color: #795D3B; font-weight: 700; text-align: center; letter-spacing: 0.08em;
+    }
+    .hope-text {
+      font-family: 'Playfair Display', serif; font-weight: 600; font-style: italic;
+      font-size: clamp(0.9rem, 2.8svh, 1.8rem); color: #795D3B;
+      text-align: center; line-height: 1.3;
+    }
+
+    .countdown-wrap { display: flex; gap: 0.6rem; justify-content: center; align-items: flex-start; }
+    .count-box { display: flex; flex-direction: column; align-items: center; gap: 0.1rem; }
+    .count-num {
+      font-family: 'Cinzel', serif; font-size: clamp(0.9rem, 2.8svh, 1.8rem);
+      color: #795D3B; font-weight: 700;
+      background: rgba(121,93,59,0.08); border: 1px solid rgba(121,93,59,0.25);
+      border-radius: 4px; padding: 0.15em 0.4em; min-width: 2.2em;
+      text-align: center; line-height: 1.2;
+    }
+    .count-label {
+      font-family: 'Cinzel', serif; font-size: clamp(0.32rem, 0.75svh, 0.45rem);
+      color: rgba(121,93,59,0.6); letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    .count-sep {
+      font-family: 'Cinzel', serif; font-size: clamp(0.85rem, 2.5svh, 1.6rem);
+      color: #795D3B; font-weight: 700; margin-top: 0.1em;
+    }
+
+    .rsvp-buttons { display: flex; gap: 3.5rem; }
+    .rsvp-btn {
+      font-family: 'Gulzar', serif; font-size: clamp(0.85rem, 2.2svh, 1.4rem);
+      letter-spacing: 0.12em; color: #795D3B;
+      background: transparent; border: none; cursor: pointer;
+      text-decoration: none; position: relative; padding-bottom: 0.3em;
+      transition: color 0.3s, transform 0.2s;
+    }
+    .rsvp-btn::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+      height: 1.5px;
+      background: linear-gradient(to right, transparent, #795D3B, transparent);
+    }
+    .rsvp-btn:hover { color: #5a3d1e; transform: translateY(-2px); }
+
+    /* PAGE 4 */
+    #page-close .card-content {
+      position: absolute;
+      top: 14%; left: 13%; right: 13%; bottom: 11%;
+      z-index: 2; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 1.2svh;
+    }
+
+    .jazakallah-arabic {
+      font-family: 'Gulzar', serif; font-size: clamp(1rem, 2.8svh, 1.8rem);
+      color: #795D3B; text-align: center;
+    }
+    .jazakallah-english {
+      font-family: 'Times New Roman', Times, serif; font-style: italic;
+      font-size: clamp(0.65rem, 1.6svh, 1rem); color: #795D3B;
+      text-align: center; display: block; transform: scaleX(0.82);
+    }
+    .close-body {
+      font-family: 'Times New Roman', Times, serif;
+      text-align: center; color: #795D3B;
+      font-size: clamp(0.55rem, 1.3svh, 0.8rem);
+      line-height: 1.8; display: block; transform: scaleX(0.82);
+    }
+
+    /* Fade-up */
+    .fade-up { opacity: 0; transform: translateY(10px); transition: opacity 0.55s ease, transform 0.55s ease; }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* Music button */
+    #music-btn {
+      position: fixed; bottom: 1.2rem; right: 1.2rem; z-index: 999;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: linear-gradient(135deg, #795D3B, #a07d50);
+      border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; box-shadow: 0 4px 18px rgba(121,93,59,0.5);
+    }
+    #music-btn.playing { animation: musicGlow 1.5s ease-in-out infinite; }
+    @keyframes musicGlow {
+      0%,100%{box-shadow:0 0 12px rgba(121,93,59,0.5);transform:scale(1);}
+      50%{box-shadow:0 0 28px rgba(121,93,59,0.9);transform:scale(1.1);}
+    }
+  </style>
+</head>
+<body>
+
+<a class="back-btn" href="{% url 'envelope' %}">← Back</a>
+
+<!-- Single audio element -->
+<audio id="bg-audio" loop preload="auto">
+  <source src="{% static 'audio/bg_music.mp3' %}" type="audio/mpeg">
+</audio>
+<!-- Single music button -->
+<button id="music-btn" onclick="toggleMusic()">🎵</button>
+
+<!-- PAGE 1 -->
+<section id="page-invite">
+  <div class="card-wrap">
+    <img class="card-bg" src="{% static 'images/main.jpg' %}" alt="Invitation"/>
+    <div class="card-content">
+      <div class="bismillah-arabic fade-up">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</div>
+      <span class="t-reg bismillah-en fade-up">In the name of Allah, the Most Gracious, the Most Merciful</span>
+      <div class="divider-gold fade-up"></div>
+      <span class="t-reg invite-intro fade-up">By the grace and blessings of Allah, we warmly invite you<br>to celebrate the sacred union of</span>
+      <div class="bride-name fade-up">Fathima Fidha</div>
+      <div class="and-text fade-up">and</div>
+      <div class="groom-name fade-up">Muhammed Rashid</div>
+      <div class="barakallah fade-up">بَارَكَ اللَّهُ لَكُمْ</div>
+      <div class="divider-gold fade-up"></div>
+      <span class="t-reg blessing-text fade-up">May Allah bless this union with love, mercy,<br>and everlasting happiness.<br>Your prayers and blessings mean the world to us.</span>
+      <div class="scroll-hint fade-up">↓ &nbsp; SCROLL &nbsp; ↓</div>
+    </div>
+  </div>
+</section>
+
+<!-- PAGE 2 -->
+<section id="page-details">
+  <div class="card-wrap">
+    <img class="card-bg" src="{% static 'images/second.png' %}" alt="Details"/>
+    <div class="card-content">
+      <span class="t-bold cordially-title fade-up">You Are Cordially Invited<br>Join Us</span>
+      <div class="divider-gold fade-up"></div>
+      <div class="date-main fade-up">01 | May | 2026</div>
+      <div class="date-hijri fade-up">14 | Dhu al-Qa'dah | 1447 AH</div>
+      <span class="t-reg time-block fade-up">3.30 PM</span>
+      <span class="t-reg venue-name fade-up">At White Lilies Convention Center<br>Kodumudi</span>
+      <a class="location-icon-wrap fade-up"
+         href="https://maps.google.com/?q=White+Lilies+Convention+Center+Kodumudi"
+         target="_blank" rel="noopener">
+        <svg viewBox="0 0 44 44" fill="none">
+          <circle cx="22" cy="22" r="21" stroke="#795D3B" stroke-width="1.5" fill="rgba(121,93,59,0.1)"/>
+          <path d="M22 10C17.6 10 14 13.6 14 18C14 24 22 34 22 34C22 34 30 24 30 18C30 13.6 26.4 10 22 10Z" fill="#795D3B" opacity="0.9"/>
+          <circle cx="22" cy="18" r="4" fill="#f5f0e8"/>
+        </svg>
+        <span class="t-reg location-label">GET DIRECTIONS</span>
+      </a>
+      <span class="t-reg inshallah-text fade-up">IN SHA ALLAH</span>
+      <span class="t-reg presence-text fade-up">Your presence and duas are the greatest gift you can offer.<br>We look forward to celebrating this blessed occasion with you.</span>
+      <div class="scroll-hint fade-up">↓ &nbsp; SCROLL &nbsp; ↓</div>
+    </div>
+  </div>
+</section>
+
+<!-- PAGE 3 -->
+<section id="page-rsvp">
+  <div class="card-wrap">
+    <img class="card-bg" src="{% static 'images/main.jpg' %}" alt="RSVP"/>
+    <div class="card-content">
+      <div class="blessing-heading fade-up">With the<br>Blessing of Allah</div>
+      <div class="blessing-date fade-up">01.05.2026</div>
+      <div class="divider-gold fade-up"></div>
+      <div class="hope-text fade-up">Hope you are<br>coming</div>
+      <div class="countdown-wrap fade-up">
+        <div class="count-box"><div class="count-num" id="cnt-days">00</div><div class="count-label">Days</div></div>
+        <div class="count-sep">:</div>
+        <div class="count-box"><div class="count-num" id="cnt-hrs">00</div><div class="count-label">Hours</div></div>
+        <div class="count-sep">:</div>
+        <div class="count-box"><div class="count-num" id="cnt-min">00</div><div class="count-label">Mins</div></div>
+        <div class="count-sep">:</div>
+        <div class="count-box"><div class="count-num" id="cnt-sec">00</div><div class="count-label">Secs</div></div>
+      </div>
+      <div class="divider-gold fade-up"></div>
+      <div class="rsvp-buttons fade-up">
+        <a class="rsvp-btn" href="{% url 'rsvp_yes' %}">YES</a>
+        <a class="rsvp-btn" href="{% url 'rsvp_no' %}">NO</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PAGE 4 -->
+<section id="page-close">
+  <div class="card-wrap">
+    <img class="card-bg" src="{% static 'images/main.jpg' %}" alt="Closing"/>
+    <div class="card-content">
+      <div class="jazakallah-arabic fade-up">جَزَاكُمُ اللَّهُ خَيْرًا</div>
+      <div class="divider-gold fade-up"></div>
+      <span class="jazakallah-english fade-up">May Allah reward you with goodness</span>
+      <span class="close-body fade-up">With your presence and blessings,<br>our special day will be even more beautiful.</span>
+    </div>
+  </div>
+</section>
+
+<script>
+  /* Fade-up */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.querySelectorAll('.fade-up').forEach((el, i) => {
+          setTimeout(() => el.classList.add('visible'), i * 100);
+        });
+      }
+    });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('section').forEach(s => observer.observe(s));
+
+  /* Countdown */
+  const weddingDate = new Date('2026-05-01T15:30:00');
+  function updateCountdown() {
+    const diff = weddingDate - new Date();
+    if (diff <= 0) { ['cnt-days','cnt-hrs','cnt-min','cnt-sec'].forEach(id => document.getElementById(id).textContent='00'); return; }
+    document.getElementById('cnt-days').textContent = String(Math.floor(diff/86400000)).padStart(2,'0');
+    document.getElementById('cnt-hrs').textContent  = String(Math.floor(diff%86400000/3600000)).padStart(2,'0');
+    document.getElementById('cnt-min').textContent  = String(Math.floor(diff%3600000/60000)).padStart(2,'0');
+    document.getElementById('cnt-sec').textContent  = String(Math.floor(diff%60000/1000)).padStart(2,'0');
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  /* Music — continues from envelope page */
+  const audio = document.getElementById('bg-audio');
+  const btn   = document.getElementById('music-btn');
+  let playing = false;
+
+  window.addEventListener('load', () => {
+    const t = sessionStorage.getItem('musicTime');
+    const p = sessionStorage.getItem('musicPlaying');
+    if (t) audio.currentTime = parseFloat(t);
+    if (p === 'true') {
+      audio.volume = 0.4;
+      /* Browser allows this because user interacted on envelope page */
+      audio.play().then(() => {
+        playing = true; btn.textContent = '🎶'; btn.classList.add('playing');
+      }).catch(() => {
+        /* Fallback: play on first scroll or touch */
+        const resume = () => {
+          audio.play().then(() => { playing=true; btn.textContent='🎶'; btn.classList.add('playing'); }).catch(()=>{});
+        };
+        document.addEventListener('scroll', resume, { once: true });
+        document.addEventListener('touchstart', resume, { once: true });
+        document.addEventListener('click', resume, { once: true });
+      });
+    }
+  });
+
+  window.addEventListener('beforeunload', () => {
+    sessionStorage.setItem('musicTime', audio.currentTime);
+    sessionStorage.setItem('musicPlaying', playing ? 'true' : 'false');
+  });
+
+  function toggleMusic() {
+    if (playing) { audio.pause(); playing=false; btn.textContent='🎵'; btn.classList.remove('playing'); }
+    else { audio.volume=0.4; audio.play(); playing=true; btn.textContent='🎶'; btn.classList.add('playing'); }
+  }
+</script>
+</body>
+</html>
