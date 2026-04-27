@@ -333,7 +333,7 @@
 </section>
 
 <script>
-  /* Fade-up */
+  /* ── Fade-up ── */
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -345,11 +345,15 @@
   }, { threshold: 0.2 });
   document.querySelectorAll('section').forEach(s => observer.observe(s));
 
-  /* Countdown */
+  /* ── Countdown ── */
   const weddingDate = new Date('2026-05-01T15:30:00');
   function updateCountdown() {
     const diff = weddingDate - new Date();
-    if (diff <= 0) { ['cnt-days','cnt-hrs','cnt-min','cnt-sec'].forEach(id => document.getElementById(id).textContent='00'); return; }
+    if (diff <= 0) {
+      ['cnt-days','cnt-hrs','cnt-min','cnt-sec']
+        .forEach(id => document.getElementById(id).textContent = '00');
+      return;
+    }
     document.getElementById('cnt-days').textContent = String(Math.floor(diff/86400000)).padStart(2,'0');
     document.getElementById('cnt-hrs').textContent  = String(Math.floor(diff%86400000/3600000)).padStart(2,'0');
     document.getElementById('cnt-min').textContent  = String(Math.floor(diff%3600000/60000)).padStart(2,'0');
@@ -358,7 +362,7 @@
   updateCountdown();
   setInterval(updateCountdown, 1000);
 
-  /* Music — continues from envelope page */
+  /* ── Music ── */
   const audio = document.getElementById('bg-audio');
   const btn   = document.getElementById('music-btn');
   let playing = false;
@@ -367,17 +371,24 @@
     const t = sessionStorage.getItem('musicTime');
     const p = sessionStorage.getItem('musicPlaying');
     if (t) audio.currentTime = parseFloat(t);
+
     if (p === 'true') {
       audio.volume = 0.4;
-      /* Browser allows this because user interacted on envelope page */
+      /* Works because user already clicked on envelope page */
       audio.play().then(() => {
-        playing = true; btn.textContent = '🎶'; btn.classList.add('playing');
+        playing = true;
+        btn.textContent = '🎶';
+        btn.classList.add('playing');
       }).catch(() => {
-        /* Fallback: play on first scroll or touch */
+        /* If still blocked, play on first scroll */
         const resume = () => {
-          audio.play().then(() => { playing=true; btn.textContent='🎶'; btn.classList.add('playing'); }).catch(()=>{});
+          audio.play().then(() => {
+            playing = true;
+            btn.textContent = '🎶';
+            btn.classList.add('playing');
+          }).catch(() => {});
         };
-        document.addEventListener('scroll', resume, { once: true });
+        window.addEventListener('scroll', resume, { once: true });
         document.addEventListener('touchstart', resume, { once: true });
         document.addEventListener('click', resume, { once: true });
       });
@@ -390,8 +401,15 @@
   });
 
   function toggleMusic() {
-    if (playing) { audio.pause(); playing=false; btn.textContent='🎵'; btn.classList.remove('playing'); }
-    else { audio.volume=0.4; audio.play(); playing=true; btn.textContent='🎶'; btn.classList.add('playing'); }
+    if (playing) {
+      audio.pause(); playing = false;
+      btn.textContent = '🎵'; btn.classList.remove('playing');
+      sessionStorage.setItem('musicPlaying', 'false');
+    } else {
+      audio.volume = 0.4; audio.play();
+      playing = true; btn.textContent = '🎶'; btn.classList.add('playing');
+      sessionStorage.setItem('musicPlaying', 'true');
+    }
   }
 </script>
 </body>

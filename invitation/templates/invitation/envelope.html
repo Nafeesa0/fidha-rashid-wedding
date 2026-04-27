@@ -252,6 +252,45 @@
   const btn   = document.getElementById('music-btn');
   let playing = false;
 
+  /* ── KEY FIX: mark that user has interacted ── */
+  function openEnvelope() {
+    const env   = document.getElementById('envelope');
+    const scene = document.getElementById('scene');
+    if (env.classList.contains('open')) return;
+
+    env.classList.add('open');
+    scene.classList.add('opened');
+
+    /* Start music immediately on this click — browser allows it */
+    if (!playing) {
+      audio.volume = 0;
+      audio.play().then(() => {
+        playing = true;
+        btn.textContent = '🎶';
+        btn.classList.add('playing');
+        /* Store that music should play on next pages */
+        sessionStorage.setItem('musicPlaying', 'true');
+        sessionStorage.setItem('musicTime', '0');
+        /* Gentle fade in */
+        let v = 0;
+        const iv = setInterval(() => {
+          if (v < 0.4) { v += 0.02; audio.volume = v; }
+          else { audio.volume = 0.4; clearInterval(iv); }
+        }, 60);
+      }).catch(err => {
+        console.log('Autoplay blocked:', err);
+      });
+    }
+  }
+
+  /* Save state when leaving page */
+  window.addEventListener('beforeunload', () => {
+    if (playing) {
+      sessionStorage.setItem('musicTime', audio.currentTime);
+      sessionStorage.setItem('musicPlaying', 'true');
+    }
+  });
+
   /* Restore music if user navigated back */
   window.addEventListener('load', () => {
     const t = sessionStorage.getItem('musicTime');
@@ -260,46 +299,28 @@
     if (p === 'true') {
       audio.volume = 0.4;
       audio.play().then(() => {
-        playing = true; btn.textContent = '🎶'; btn.classList.add('playing');
+        playing = true;
+        btn.textContent = '🎶';
+        btn.classList.add('playing');
       }).catch(() => {});
     }
   });
-
-  /* Save state on page leave */
-  window.addEventListener('beforeunload', () => {
-    sessionStorage.setItem('musicTime', audio.currentTime);
-    sessionStorage.setItem('musicPlaying', playing ? 'true' : 'false');
-  });
-
-  /* Open envelope AND start music — user click = autoplay allowed */
-  function openEnvelope() {
-    const env   = document.getElementById('envelope');
-    const scene = document.getElementById('scene');
-    if (env.classList.contains('open')) return;
-    env.classList.add('open');
-    scene.classList.add('opened');
-
-    if (!playing) {
-      audio.volume = 0;
-      audio.play().then(() => {
-        playing = true; btn.textContent = '🎶'; btn.classList.add('playing');
-        let v = 0;
-        const iv = setInterval(() => {
-          if (v < 0.4) { v += 0.02; audio.volume = v; }
-          else { audio.volume = 0.4; clearInterval(iv); }
-        }, 60);
-      }).catch(() => {});
-    }
-  }
 
   function toggleMusic(e) {
     if (e) e.stopPropagation();
     if (playing) {
-      audio.pause(); playing = false;
-      btn.textContent = '🎵'; btn.classList.remove('playing');
+      audio.pause();
+      playing = false;
+      btn.textContent = '🎵';
+      btn.classList.remove('playing');
+      sessionStorage.setItem('musicPlaying', 'false');
     } else {
-      audio.volume = 0.4; audio.play();
-      playing = true; btn.textContent = '🎶'; btn.classList.add('playing');
+      audio.volume = 0.4;
+      audio.play();
+      playing = true;
+      btn.textContent = '🎶';
+      btn.classList.add('playing');
+      sessionStorage.setItem('musicPlaying', 'true');
     }
   }
 
@@ -314,7 +335,8 @@
     return true;
   }
 
-  document.getElementById('nameOverlay').addEventListener('click', e => e.stopPropagation());
+  document.getElementById('nameOverlay')
+    .addEventListener('click', e => e.stopPropagation());
 
   {% if error %}
     window.addEventListener('load', () => {
